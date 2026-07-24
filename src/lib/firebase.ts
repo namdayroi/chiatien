@@ -10,18 +10,8 @@ import {
   orderBy,
   Unsubscribe,
 } from 'firebase/firestore';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  User,
-} from 'firebase/auth';
 import firebaseConfig from '../../firebase-applet-config.json';
-import { Expense, AuditLog, UserProfile } from '../types';
+import { Expense, AuditLog } from '../types';
 
 // Initialize Firebase App
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
@@ -31,79 +21,6 @@ export const db = getFirestore(
   app,
   firebaseConfig.firestoreDatabaseId || '(default)'
 );
-
-// Get Firebase Auth instance
-export const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider();
-
-// --- Auth Operations ---
-
-/**
- * Sign in with Google Popup
- */
-export async function signInWithGoogle(): Promise<UserProfile> {
-  const result = await signInWithPopup(auth, googleProvider);
-  const user = result.user;
-  return {
-    uid: user.uid,
-    displayName: user.displayName,
-    email: user.email,
-    photoURL: user.photoURL,
-  };
-}
-
-/**
- * Sign in with Email and Password
- */
-export async function loginWithEmail(email: string, pass: string): Promise<UserProfile> {
-  const result = await signInWithEmailAndPassword(auth, email, pass);
-  const user = result.user;
-  return {
-    uid: user.uid,
-    displayName: user.displayName || email.split('@')[0],
-    email: user.email,
-    photoURL: user.photoURL,
-  };
-}
-
-/**
- * Register with Email and Password
- */
-export async function registerWithEmail(email: string, pass: string): Promise<UserProfile> {
-  const result = await createUserWithEmailAndPassword(auth, email, pass);
-  const user = result.user;
-  return {
-    uid: user.uid,
-    displayName: user.displayName || email.split('@')[0],
-    email: user.email,
-    photoURL: user.photoURL,
-  };
-}
-
-/**
- * Sign Out
- */
-export async function logoutFirebase(): Promise<void> {
-  await signOut(auth);
-}
-
-/**
- * Subscribe to Auth state changes
- */
-export function subscribeAuthState(callback: (user: UserProfile | null) => void): Unsubscribe {
-  return onAuthStateChanged(auth, (firebaseUser: User | null) => {
-    if (firebaseUser) {
-      callback({
-        uid: firebaseUser.uid,
-        displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Thành viên',
-        email: firebaseUser.email,
-        photoURL: firebaseUser.photoURL,
-      });
-    } else {
-      callback(null);
-    }
-  });
-}
 
 // Collections
 const EXPENSES_COLLECTION = 'expenses';

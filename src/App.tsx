@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Table, Calculator, ArrowRightLeft, PieChart, ShieldCheck } from 'lucide-react';
-import { Member, Expense, ActiveTab, AuditLog, UserProfile } from './types';
+import { Member, Expense, ActiveTab, AuditLog } from './types';
 import {
   getStoredMembers,
   getStoredExpenses,
@@ -21,8 +21,6 @@ import {
   syncAddMonth,
   syncDeleteMonth,
   syncSaveAuditLog,
-  subscribeAuthState,
-  logoutFirebase,
 } from './lib/firebase';
 import { calculateBalances, calculateDebtSettlement } from './utils/calculations';
 import { Header } from './components/Header';
@@ -35,9 +33,13 @@ import { DebtSettlement } from './components/DebtSettlement';
 import { ExpenseStats } from './components/ExpenseStats';
 import { AuditHistoryTable } from './components/AuditHistoryTable';
 import { AddExpenseModal } from './components/AddExpenseModal';
-import { AuthModal } from './components/AuthModal';
+import { PasscodeGate } from './components/PasscodeGate';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('room_passcode_authenticated') === 'true';
+  });
+
   const [members, setMembers] = useState<Member[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [months, setMonths] = useState<string[]>([]);
@@ -46,8 +48,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('excel');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAddMonthModalOpen, setIsAddMonthModalOpen] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   // Load stored local data on mount and subscribe to Firestore Realtime
@@ -103,15 +103,10 @@ export default function App() {
       }
     });
 
-    const unsubAuth = subscribeAuthState((user) => {
-      setCurrentUser(user);
-    });
-
     return () => {
       unsubExpenses();
       unsubMonths();
       unsubAudit();
-      unsubAuth();
     };
   }, []);
 
@@ -271,6 +266,11 @@ export default function App() {
   const balances = calculateBalances(members, filteredExpenses);
   const debtSettlements = calculateDebtSettlement(balances);
 
+  // If user hasn't entered passcode P215 yet, show Passcode Verification Gate
+  if (!isAuthenticated) {
+    return <PasscodeGate onAuthenticate={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="min-h-screen max-w-full overflow-x-hidden bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
       {/* App Header */}
@@ -285,9 +285,10 @@ export default function App() {
         members={members}
         balances={balances}
         settlements={debtSettlements}
-        currentUser={currentUser}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
-        onLogout={logoutFirebase}
+        onLockPasscode={() => {
+          localStorage.removeItem('room_passcode_authenticated');
+          setIsAuthenticated(false);
+        }}
       />
 
       {/* Navigation Tabs */}

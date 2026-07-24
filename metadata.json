@@ -1,0 +1,6 @@
+{
+  "name": "Chia Tiền Phòng",
+  "description": "Ứng dụng quản lý và chia tiền phòng đơn giản cho Huy, Nam, Nghĩa, Tuyên",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

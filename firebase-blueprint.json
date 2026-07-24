@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "expenses": {
+      "title": "Expenses",
+      "description": "Room shared expenses",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "amount": { "type": "number" },
+        "payerId": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": "string" },
+        "date": { "type": "string" },
+        "note": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["title", "amount", "payerId", "participants", "category", "date", "createdAt"]
+    },
+    "months": {
+      "title": "Months",
+      "description": "Active month keys",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "monthKey": { "type": "string" }
+      },
+      "required": ["monthKey"]
+    },
+    "auditLogs": {
+      "title": "Audit Logs",
+      "description": "System audit logs for edit and delete actions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "action": { "type": "string" },
+        "expenseId": { "type": "string" },
+        "expenseTitle": { "type": "string" },
+        "amount": { "type": "number" },
+        "payerId": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["timestamp", "action", "expenseTitle", "amount", "details"]
+    }
+  }
+}

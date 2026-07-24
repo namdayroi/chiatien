@@ -47,13 +47,13 @@ export const PasscodeGate: React.FC<PasscodeGateProps> = ({ onAuthenticate }) =>
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Phòng P215 • Cloud Sync</span>
+              <span>Xác Thực Bảo Mật • Cloud Sync</span>
             </div>
             <h1 className="text-2xl font-bold text-white tracking-tight pt-1">
               Quản Lý Chia Tiền Phòng
             </h1>
             <p className="text-xs text-slate-400 max-w-xs">
-              Vui lòng nhập <span className="text-emerald-400 font-semibold">Mã phòng (P215)</span> để truy cập bảng tính toán công nợ.
+              Vui lòng nhập <span className="text-emerald-400 font-semibold">Mã phòng</span> để truy cập bảng tính toán công nợ.
             </p>
           </div>
         </div>
@@ -73,7 +73,7 @@ export const PasscodeGate: React.FC<PasscodeGateProps> = ({ onAuthenticate }) =>
                   setPasscode(e.target.value);
                   if (error) setError(false);
                 }}
-                placeholder="Nhập mã (ví dụ: P215)"
+                placeholder="Nhập mã truy cập..."
                 autoFocus
                 className={`w-full bg-slate-950 border ${
                   error
@@ -102,7 +102,7 @@ export const PasscodeGate: React.FC<PasscodeGateProps> = ({ onAuthenticate }) =>
         </form>
 
         <div className="text-center pt-2 border-t border-slate-800/80 text-[11px] text-slate-500">
-          Hệ thống chia tiền tự động & đồng bộ thời gian thực cho phòng P215
+          Hệ thống chia tiền tự động & đồng bộ thời gian thực
         </div>
       </div>
     </div>

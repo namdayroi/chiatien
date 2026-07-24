@@ -7,6 +7,13 @@ export interface Member {
   avatarText: string;
 }
 
+export interface UserProfile {
+  uid: string;
+  displayName: string | null;
+  email: string | null;
+  photoURL: string | null;
+}
+
 export type CategoryType = 'electricity' | 'water' | 'internet' | 'rent' | 'food' | 'other';
 
 export interface Category {
